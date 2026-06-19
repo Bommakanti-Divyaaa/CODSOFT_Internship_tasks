@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Titanic Survival Predictor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <div class="page-wrap">
+
+    <!-- ── Header ── -->
+    <header>
+      <div class="header-inner">
+        <div class="ship-icon">🚢</div>
+        <div>
+          <h1>Titanic Survival Predictor</h1>
+          <p class="subtitle">Enter passenger details to predict survival likelihood</p>
+        </div>
+      </div>
+    </header>
+
+    <!-- ── Main card ── -->
+    <main>
+      <div class="card">
+
+        {% if error %}
+        <div class="alert alert-error">
+          <span class="alert-icon">⚠</span> {{ error }}
+        </div>
+        {% endif %}
+
+        {% if prediction %}
+        <div class="result {{ 'survived' if prediction == 'Survived' else 'not-survived' }}">
+          <span class="result-icon">{{ '✓' if prediction == 'Survived' else '✗' }}</span>
+          <div>
+            <div class="result-label">Prediction</div>
+            <div class="result-value">{{ prediction }}</div>
+          </div>
+        </div>
+        {% endif %}
+
+        <form method="POST" action="/" novalidate>
+          <div class="form-grid">
+
+            {% for feat in feature_names %}
+              {% if feat in feature_config %}
+                {% set label, ftype, opts = feature_config[feat] %}
+                <div class="form-group">
+                  <label for="{{ feat }}">{{ label }}</label>
+
+                  {% if ftype == "select" %}
+                    <select id="{{ feat }}" name="{{ feat }}" required>
+                      <option value="" disabled {{ 'selected' if feat not in form_data else '' }}>Select…</option>
+                      {% for val, display in opts %}
+                        <option value="{{ val }}"
+                          {{ 'selected' if form_data.get(feat) == val else '' }}>
+                          {{ display }}
+                        </option>
+                      {% endfor %}
+                    </select>
+
+                  {% else %}
+                    <input
+                      type="number"
+                      id="{{ feat }}"
+                      name="{{ feat }}"
+                      placeholder="{{ opts }}"
+                      step="any"
+                      min="0"
+                      value="{{ form_data.get(feat, '') }}"
+                      required />
+                  {% endif %}
+
+                </div>
+              {% else %}
+                <!-- Generic fallback for unknown features -->
+                <div class="form-group">
+                  <label for="{{ feat }}">{{ feat }}</label>
+                  <input type="number" id="{{ feat }}" name="{{ feat }}"
+                         placeholder="Enter value"
+                         value="{{ form_data.get(feat, '') }}" step="any" required />
+                </div>
+              {% endif %}
+            {% endfor %}
+
+          </div>
+
+          <button type="submit" class="btn-predict">Predict Survival</button>
+        </form>
+
+      </div>
+    </main>
+
+    <!-- ── Footer ── -->
+    <footer>
+      <p>This model has been trained on a dataset from Kaggle</p>
+    </footer>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CREDIT FRAUD | Fraud Detection System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <div class="page">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header__badge">Machine Learning · Risk Analytics</div>
+      <h1 class="header__title">CREDIT FRAUD</h1>
+      <p class="header__subtitle">Credit Card Fraud Detection Using Machine Learning</p>
+    </header>
+
+    <!-- Main Card -->
+    <main class="card">
+
+      <form id="prediction-form">
+
+        <!-- Transaction details -->
+        <section class="form-section">
+          <div class="form-section__heading">
+            <span class="form-section__index">01</span>
+            <div>
+              <h2>Transaction Details</h2>
+              <p>Core information about the transaction</p>
+            </div>
+          </div>
+
+          <div class="grid grid--two">
+            {% for key in feature_order %}
+              {% if feature_ranges[key].group == 'transaction' %}
+                <div class="field">
+                  <label for="{{ key }}">{{ feature_ranges[key].label }}</label>
+                  <input
+                    type="number"
+                    step="{{ feature_ranges[key].step }}"
+                    id="{{ key }}"
+                    name="{{ key }}"
+                    placeholder="e.g. {{ feature_ranges[key].default }}"
+                    value="{{ feature_ranges[key].default }}"
+                    required
+                  />
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </section>
+
+        <!-- PCA components -->
+        <section class="form-section">
+          <div class="form-section__heading">
+            <span class="form-section__index">02</span>
+            <div>
+              <h2>Transaction Pattern Features</h2>
+              <p>Anonymized PCA components (V1&ndash;V28) generated from the original transaction data</p>
+            </div>
+          </div>
+
+          <div class="grid grid--pca">
+            {% for key in feature_order %}
+              {% if feature_ranges[key].group == 'pca' %}
+                <div class="field field--compact">
+                  <label for="{{ key }}">{{ feature_ranges[key].label }}</label>
+                  <input
+                    type="number"
+                    step="{{ feature_ranges[key].step }}"
+                    id="{{ key }}"
+                    name="{{ key }}"
+                    placeholder="0.0"
+                    value="{{ feature_ranges[key].default }}"
+                    required
+                  />
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </section>
+
+        <!-- Actions -->
+        <div class="actions">
+          <button type="button" id="reset-btn" class="btn btn--ghost">Reset Fields</button>
+          <button type="submit" id="predict-btn" class="btn btn--primary">
+            <span class="btn__label">Analyze Transaction</span>
+            <span class="btn__spinner" aria-hidden="true"></span>
+          </button>
+        </div>
+      </form>
+
+      <!-- Result -->
+      <div id="result" class="result" hidden>
+        <div id="result-card" class="result__card">
+          <div class="result__icon" id="result-icon"></div>
+          <div class="result__text">
+            <h3 id="result-title"></h3>
+            <p id="result-subtitle"></p>
+            <div class="result__meter">
+              <div class="result__meter-bar">
+                <div id="result-meter-fill" class="result__meter-fill"></div>
+              </div>
+              <div class="result__meter-labels">
+                <span>Genuine: <strong id="genuine-pct">0%</strong></span>
+                <span>Fraud: <strong id="fraud-pct">0%</strong></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="error" class="error" hidden></div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>Machine Learning Based Credit Card Fraud Detection System</p>
+    </footer>
+
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

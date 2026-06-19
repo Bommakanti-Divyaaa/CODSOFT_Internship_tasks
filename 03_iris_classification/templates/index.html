@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iris Flower Classification</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Background decorative elements -->
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+
+    <div class="page-wrapper">
+
+        <!-- Header -->
+        <header class="header">
+            <div class="header-badge">🌿 ML Classification</div>
+            <h1 class="header-title">Iris Flower<br><span class="gradient-text">Classification</span></h1>
+            <p class="header-subtitle">
+                Enter the flower measurements below and our Logistic Regression model will identify
+                the species with confidence scores.
+            </p>
+
+            <!-- Species pills -->
+            <div class="species-pills">
+                <span class="pill pill-setosa">🌸 Iris Setosa</span>
+                <span class="pill pill-versicolor">💜 Iris Versicolor</span>
+                <span class="pill pill-virginica">🌺 Iris Virginica</span>
+            </div>
+        </header>
+
+        <!-- Main content -->
+        <main class="main">
+
+            <!-- Input card -->
+            <section class="card input-card">
+                <div class="card-header">
+                    <div class="card-icon">📐</div>
+                    <div>
+                        <h2 class="card-title">Flower Measurements</h2>
+                        <p class="card-subtitle">All values in centimeters (cm)</p>
+                    </div>
+                </div>
+
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="sepal_length" class="input-label">
+                            <span class="label-dot dot-sepal"></span>
+                            Sepal Length
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="number" id="sepal_length" class="input-field"
+                                   placeholder="e.g. 5.1" step="0.1" min="0.1" max="30">
+                            <span class="input-unit">cm</span>
+                        </div>
+                        <span class="input-hint">Typical: 4.3 – 7.9 cm</span>
+                        <span class="input-error" id="err_sepal_length"></span>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="sepal_width" class="input-label">
+                            <span class="label-dot dot-sepal"></span>
+                            Sepal Width
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="number" id="sepal_width" class="input-field"
+                                   placeholder="e.g. 3.5" step="0.1" min="0.1" max="30">
+                            <span class="input-unit">cm</span>
+                        </div>
+                        <span class="input-hint">Typical: 2.0 – 4.4 cm</span>
+                        <span class="input-error" id="err_sepal_width"></span>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="petal_length" class="input-label">
+                            <span class="label-dot dot-petal"></span>
+                            Petal Length
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="number" id="petal_length" class="input-field"
+                                   placeholder="e.g. 1.4" step="0.1" min="0.1" max="30">
+                            <span class="input-unit">cm</span>
+                        </div>
+                        <span class="input-hint">Typical: 1.0 – 6.9 cm</span>
+                        <span class="input-error" id="err_petal_length"></span>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="petal_width" class="input-label">
+                            <span class="label-dot dot-petal"></span>
+                            Petal Width
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="number" id="petal_width" class="input-field"
+                                   placeholder="e.g. 0.2" step="0.1" min="0.1" max="30">
+                            <span class="input-unit">cm</span>
+                        </div>
+                        <span class="input-hint">Typical: 0.1 – 2.5 cm</span>
+                        <span class="input-error" id="err_petal_width"></span>
+                    </div>
+                </div>
+
+                <button id="predict-btn" class="predict-btn">
+                    <span class="btn-text">Classify Flower</span>
+                    <span class="btn-icon">→</span>
+                    <div class="btn-loader" style="display:none;">
+                        <div class="spinner"></div>
+                    </div>
+                </button>
+
+                <p class="try-examples-label">Try an example:</p>
+                <div class="sample-btns">
+                    <button class="sample-btn" onclick="fillSample(5.1, 3.5, 1.4, 0.2)">🌸 Setosa</button>
+                    <button class="sample-btn" onclick="fillSample(6.0, 2.9, 4.5, 1.5)">💜 Versicolor</button>
+                    <button class="sample-btn" onclick="fillSample(6.5, 3.0, 5.8, 2.2)">🌺 Virginica</button>
+                </div>
+            </section>
+
+            <!-- Result card (hidden by default) -->
+            <section class="card result-card" id="result-card" style="display:none;">
+                <div class="result-header">
+                    <div class="result-emoji" id="result-emoji">🌸</div>
+                    <div>
+                        <p class="result-label">Predicted Species</p>
+                        <h2 class="result-name" id="result-name">Iris Setosa</h2>
+                        <p class="result-description" id="result-description"></p>
+                    </div>
+                </div>
+
+                <div class="confidence-section">
+                    <h3 class="confidence-title">Confidence Scores</h3>
+                    <div class="confidence-bars" id="confidence-bars"></div>
+                </div>
+            </section>
+
+            <!-- Error card -->
+            <section class="card error-card" id="error-card" style="display:none;">
+                <div class="error-inner">
+                    <span class="error-icon">⚠️</span>
+                    <p class="error-message" id="error-message">Something went wrong.</p>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Info section -->
+        <section class="info-section">
+            <h2 class="info-title">About This Model</h2>
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-icon">🤖</div>
+                    <h3>Algorithm</h3>
+                    <p>Logistic Regression — a probabilistic classifier that outputs confidence scores for each class.</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">📊</div>
+                    <h3>Dataset</h3>
+                    <p>Trained on the classic Iris dataset with 150 samples across 3 species, 4 features each.</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">🎯</div>
+                    <h3>Accuracy</h3>
+                    <p>Achieves ~97% accuracy on the test set — a well-studied benchmark in machine learning.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>Built with Flask &amp; Scikit-learn &nbsp;·&nbsp; Iris Flower Classification</p>
+        </footer>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

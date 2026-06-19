@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CineScore — Advertising Sales Predictor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+
+  <!-- ══ NAVBAR ══════════════════════════════════════════════════════════ -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <!-- Logo / brand -->
+      <a href="#home" class="brand">
+        <span class="brand-icon">📈</span>
+        <span class="brand-name">SalesIQ</span>
+      </a>
+
+      <!-- Navigation links -->
+      <ul class="nav-links">
+        <li><a href="#home"       class="nav-link">Home</a></li>
+        <li><a href="#predict"    class="nav-link">Predict</a></li>
+        <li><a href="#about"      class="nav-link">About</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ══ HOME / HERO ═════════════════════════════════════════════════════ -->
+  <section class="hero" id="home">
+    <div class="hero-bg-shape"></div>
+    <div class="container hero-content">
+      <p class="hero-eyebrow">Machine Learning · Advertising Analytics</p>
+      <h1 class="hero-title">
+        Forecast Your<br />
+        <span class="accent">Ad-Driven Sales</span>
+      </h1>
+      <p class="hero-desc">
+        Enter your TV, Radio, and Newspaper advertising budgets to instantly
+        predict expected product sales — powered by a trained regression model.
+      </p>
+      <a href="#predict" class="btn btn-primary">Start Prediction ↓</a>
+    </div>
+
+    <!-- Decorative stats strip -->
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-val">3</span>
+        <span class="stat-lbl">Input Features</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-val">Linear</span>
+        <span class="stat-lbl">Regression Model</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-val">Instant</span>
+        <span class="stat-lbl">Prediction</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ PREDICTION SECTION ══════════════════════════════════════════════ -->
+  <section class="predict-section" id="predict">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-eyebrow">Step 1 — Enter Budgets</p>
+        <h2 class="section-title">Make a Prediction</h2>
+        <p class="section-sub">
+          All values are in thousands of dollars (e.g. 200 = $200,000 budget).
+        </p>
+      </div>
+
+      <div class="predict-layout">
+
+        <!-- ── Input card ─────────────────────────────────────────── -->
+        <div class="card input-card">
+          <form id="predict-form" novalidate>
+
+            <!-- TV Budget -->
+            <div class="form-group">
+              <label class="form-label" for="tv">
+                <span class="input-icon">📺</span> TV Advertising Budget
+                <span class="unit-tag">$k</span>
+              </label>
+              <input
+                type="number"
+                id="tv"
+                name="tv"
+                class="form-input"
+                placeholder="e.g. 230.1"
+                min="0"
+                step="0.1"
+              />
+              <span class="field-error" id="tv-error"></span>
+            </div>
+
+            <!-- Radio Budget -->
+            <div class="form-group">
+              <label class="form-label" for="radio">
+                <span class="input-icon">📻</span> Radio Advertising Budget
+                <span class="unit-tag">$k</span>
+              </label>
+              <input
+                type="number"
+                id="radio"
+                name="radio"
+                class="form-input"
+                placeholder="e.g. 37.8"
+                min="0"
+                step="0.1"
+              />
+              <span class="field-error" id="radio-error"></span>
+            </div>
+
+            <!-- Newspaper Budget -->
+            <div class="form-group">
+              <label class="form-label" for="newspaper">
+                <span class="input-icon">📰</span> Newspaper Advertising Budget
+                <span class="unit-tag">$k</span>
+              </label>
+              <input
+                type="number"
+                id="newspaper"
+                name="newspaper"
+                class="form-input"
+                placeholder="e.g. 69.2"
+                min="0"
+                step="0.1"
+              />
+              <span class="field-error" id="newspaper-error"></span>
+            </div>
+
+            <!-- Error banner (server-side errors) -->
+            <div class="error-banner hidden" id="error-banner"></div>
+
+            <!-- Actions -->
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" id="predict-btn">
+                <span id="btn-text">Predict Sales</span>
+                <span id="btn-loader" class="loader hidden"></span>
+              </button>
+              <button type="button" class="btn btn-outline" id="clear-btn">
+                Clear Inputs
+              </button>
+            </div>
+
+          </form>
+        </div>
+
+        <!-- ── Result card ────────────────────────────────────────── -->
+        <div class="card result-card" id="result-card">
+          <div class="result-idle" id="result-idle">
+            <div class="result-idle-icon">🎯</div>
+            <p class="result-idle-text">
+              Your predicted sales will appear here after you submit budgets.
+            </p>
+          </div>
+
+          <div class="result-output hidden" id="result-output">
+            <p class="result-label">Predicted Sales</p>
+            <div class="result-value-wrap">
+              <span class="result-value" id="result-value">—</span>
+              <span class="result-unit">thousand units</span>
+            </div>
+            <p class="result-note">
+              Based on the advertising mix you entered.<br />
+              Values are in thousands of product units sold.
+            </p>
+          </div>
+        </div>
+
+      </div><!-- /predict-layout -->
+    </div>
+  </section>
+
+  <!-- ══ ABOUT SECTION ═══════════════════════════════════════════════════ -->
+  <section class="about-section" id="about">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-eyebrow">Background</p>
+        <h2 class="section-title">About This Project</h2>
+      </div>
+
+      <div class="about-grid">
+
+        <div class="about-card">
+          <div class="about-card-icon">📊</div>
+          <h3 class="about-card-title">The Dataset</h3>
+          <p class="about-card-body">
+            This model was trained on the classic <strong>Advertising dataset</strong>
+            from the ISLR textbook — 200 real-world records of advertising spend
+            across three media channels and the resulting product sales.
+          </p>
+        </div>
+
+        <div class="about-card">
+          <div class="about-card-icon">🔢</div>
+          <h3 class="about-card-title">Features (Inputs)</h3>
+          <ul class="feature-list">
+            <li><span class="feature-badge tv">TV</span> TV ad spend in $k</li>
+            <li><span class="feature-badge radio">Radio</span> Radio ad spend in $k</li>
+            <li><span class="feature-badge news">News</span> Newspaper ad spend in $k</li>
+          </ul>
+        </div>
+
+        <div class="about-card">
+          <div class="about-card-icon">🎯</div>
+          <h3 class="about-card-title">Target (Output)</h3>
+          <p class="about-card-body">
+            <strong>Sales</strong> — product units sold (in thousands).
+            The model learns how each advertising channel contributes to sales
+            and uses those learned weights to predict outcomes for new budgets.
+          </p>
+        </div>
+
+        <div class="about-card">
+          <div class="about-card-icon">🤖</div>
+          <h3 class="about-card-title">The Model</h3>
+          <p class="about-card-body">
+            A <strong>Multiple Linear Regression</strong> model was trained
+            using scikit-learn. It fits a straight-line relationship between
+            each advertising channel and sales — interpretable, fast, and
+            effective on this well-behaved dataset.
+          </p>
+        </div>
+
+      </div><!-- /about-grid -->
+    </div>
+  </section>
+
+  <!-- ══ FOOTER ══════════════════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span class="brand">
+        <span class="brand-icon">📈</span>
+        <span class="brand-name">SalesIQ</span>
+      </span>
+      <p class="footer-copy">
+        © 2025 Advertising Sales Prediction · Built with Flask &amp; scikit-learn
+      </p>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

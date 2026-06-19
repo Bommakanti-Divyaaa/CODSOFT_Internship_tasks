@@ -1,0 +1,31 @@
+# datasets
+*.csv
+*.xlsx
+*.json
+
+# models
+*.pkl
+*.joblib
+*.h5
+
+# folders
+dataset/
+datasets/
+data/
+models/
+outputs/
+
+# python cache
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# virtual env
+venv/
+env/
+.venv/
+
+# system / IDE
+.DS_Store
+.vscode/
+.idea/
